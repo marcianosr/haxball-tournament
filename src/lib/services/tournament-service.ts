@@ -172,6 +172,7 @@ export async function generateSemiFinalMatches(): Promise<GenerateSemiFinalMatch
 export async function generateFinalMatch(): Promise<GenerateFinalMatchResponse> {
     // Get semi-final matches
     const semiFinals = await getSemiFinalsMatches();
+    console.log('Semi-finals for final generation:', semiFinals);
 
     // Verify both semi-finals are completed
     const incompleteSemiFinals = semiFinals.filter(m => !m.completed);
@@ -208,12 +209,14 @@ export async function generateFinalMatch(): Promise<GenerateFinalMatchResponse> 
     const semifinal1Winner = semiFinals[0]?.winner;
     const semifinal2Winner = semiFinals[1]?.winner;
 
-    if (!semifinal1Winner || !semifinal2Winner) {
+    if (!semifinal1Winner || !semifinal2Winner || !semifinal1Winner.id || !semifinal2Winner.id) {
         return {
             success: false,
             message: 'Could not determine winners from semi-finals',
         };
     }
+
+    console.log('Creating final match between:', semifinal1Winner.name || 'unknown', 'and', semifinal2Winner.name || 'unknown');
 
     // Create final match
     const finalMatch = await createMatch({
@@ -247,25 +250,46 @@ export async function generateFinalMatch(): Promise<GenerateFinalMatchResponse> 
 }
 
 export async function completeKnockoutPhase(): Promise<boolean> {
+    console.log('Checking if knockout phase is completed');
+
+    // First, verify that a final match exists and is completed
     const final = await prisma.match.findFirst({
         where: {
             phase: 'KNOCKOUT',
             round: 'FINAL',
             completed: true
         },
+        include: {
+            winner: true
+        }
     });
 
+    console.log('Final match status:', final ? `Completed with winner ${final.winner?.name || 'unknown'}` : 'Not completed or not found');
+
     if (!final || !final.winnerId) {
+        console.log('No completed final match found');
         return false;
     }
 
-    // Update tournament status to set champion
-    await prisma.tournamentStatus.update({
+    // Get the tournament status
+    const status = await prisma.tournamentStatus.findUnique({
         where: { id: 'singleton' },
-        data: { championId: final.winnerId },
     });
 
-    return true;
+    // Only update if the champion isn't already set
+    if (status && !status.championId) {
+        console.log('Setting champion ID to:', final.winnerId);
+
+        // Update tournament status to set champion
+        await prisma.tournamentStatus.update({
+            where: { id: 'singleton' },
+            data: { championId: final.winnerId },
+        });
+
+        return true;
+    }
+
+    return false;
 }
 
 export async function resetTournament(): Promise<void> {

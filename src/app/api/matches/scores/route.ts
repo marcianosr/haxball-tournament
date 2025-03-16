@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { updateMatchScore } from '@/lib/services/match-service';
+import { updateMatchScore, getMatchById } from '@/lib/services/match-service';
 import { UpdateMatchScoreInput } from '@/types';
 import { completeKnockoutPhase, checkAndCompleteGroupPhase } from '@/lib/services/tournament-service';
 
@@ -28,14 +28,30 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        // Get match details before updating
+        const matchBefore = await getMatchById(data.id);
+        if (!matchBefore) {
+            return Response.json(
+                { error: 'Match not found' },
+                { status: 404 }
+            );
+        }
+
         // Update match score
         const updatedMatch = await updateMatchScore(data);
+        console.log('Updated match:', updatedMatch);
 
-        // Check if group phase is completed
-        await checkAndCompleteGroupPhase();
+        // Check if group phase is completed - only if this was a GROUP phase match
+        if (matchBefore.phase === 'GROUP') {
+            console.log('Checking if group phase is completed');
+            await checkAndCompleteGroupPhase();
+        }
 
-        // Check if knockout phase is completed
-        await completeKnockoutPhase();
+        // Check if knockout phase is completed - only if this was a FINAL round match
+        if (matchBefore.phase === 'KNOCKOUT' && matchBefore.round === 'FINAL') {
+            console.log('Checking if knockout phase is completed');
+            await completeKnockoutPhase();
+        }
 
         return Response.json(updatedMatch);
     } catch (error) {

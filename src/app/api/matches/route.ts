@@ -29,8 +29,31 @@ export async function GET(request: NextRequest) {
             return Response.json(match);
         }
 
+        // Check for specific knockout phase types (semifinals or final)
+        if (phase === 'KNOCKOUT' && type) {
+            if (type === 'semifinals') {
+                console.log('Fetching semifinals matches');
+                const matches = await getSemiFinalsMatches();
+                return Response.json(matches);
+            } else if (type === 'final') {
+                console.log('Fetching final match');
+                const match = await getFinalMatch();
+                // Make sure we return consistent data
+                if (match) {
+                    // Return the actual match data when it exists
+                    console.log("Returning final match:", match);
+                    return Response.json(match);
+                } else {
+                    // Return an empty object if no match exists
+                    console.log("No final match found");
+                    return Response.json(null);
+                }
+            }
+        }
+
         // Get matches by phase
         if (phase) {
+            console.log(`Fetching all ${phase} phase matches`);
             const matches = await getMatchesByPhase(phase);
             return Response.json(matches);
         }
@@ -46,18 +69,8 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // Get knockout matches by type
-        if (phase === 'KNOCKOUT' && type) {
-            if (type === 'semifinals') {
-                const matches = await getSemiFinalsMatches();
-                return Response.json(matches);
-            } else if (type === 'final') {
-                const match = await getFinalMatch();
-                return Response.json(match || {});
-            }
-        }
-
         // Default: get all matches
+        console.log('Fetching all matches');
         const matches = await getAllMatches();
         return Response.json(matches);
     } catch (error) {
