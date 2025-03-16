@@ -22,9 +22,7 @@ export function TournamentStatusDisplay() {
         }
 
         fetchStatus();
-        const intervalId = setInterval(fetchStatus, 5000); // Poll every 5 seconds
-
-        return () => clearInterval(intervalId);
+        // Auto-refresh interval removed
     }, []);
 
     if (loading) {
