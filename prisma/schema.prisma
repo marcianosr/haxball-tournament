@@ -21,3 +21,58 @@ model User {
   name      String
   email     String   @unique
 }
+
+model Player {
+  id            String  @id @default(cuid())
+  name          String
+  points        Int     @default(0)
+  matchesPlayed Int     @default(0) @map("matches_played")
+  wins          Int     @default(0)
+  losses        Int     @default(0)
+
+  // Relations
+  matchesAsPlayer1 Match[] @relation("Player1")
+  matchesAsPlayer2 Match[] @relation("Player2")
+  wonMatches      Match[] @relation("Winner")
+
+  @@map("players")
+}
+
+model Match {
+  id           String  @id @default(cuid())
+  player1Id    String  @map("player1_id")
+  player2Id    String  @map("player2_id")
+  player1Score Int?    @map("player1_score")
+  player2Score Int?    @map("player2_score")
+  winnerId     String? @map("winner_id")
+  phase        Phase   @default(GROUP)
+  round        Round?
+  completed    Boolean @default(false)
+
+  // Relations
+  player1 Player  @relation("Player1", fields: [player1Id], references: [id])
+  player2 Player  @relation("Player2", fields: [player2Id], references: [id])
+  winner  Player? @relation("Winner", fields: [winnerId], references: [id])
+
+  @@map("matches")
+}
+
+enum Phase {
+  GROUP
+  KNOCKOUT
+}
+
+enum Round {
+  SEMI_FINAL
+  FINAL
+}
+
+model TournamentStatus {
+  id              String         @id @default("singleton")
+  currentPhase    Phase          @default(GROUP) @map("current_phase")
+  groupCompleted  Boolean        @default(false) @map("group_completed")
+  knockoutCreated Boolean        @default(false) @map("knockout_created")
+  championId      String?        @map("champion_id")
+  
+  @@map("tournament_status")
+}
