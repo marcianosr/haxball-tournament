@@ -41,14 +41,17 @@ export default function KnockoutPhasePage() {
     }, [router]);
 
     return (
-        <div className="animate-fade-in">
+        <div className="animate-fade-in space-y-8">
             <div className="mb-8">
-                <div className="flex flex-col gap-2 mb-6">
-                    <div className="flex items-center gap-2">
-                        <div className="h-10 w-10 bg-secondary/20 rounded-md flex items-center justify-center">
-                            <Trophy size={20} className="text-secondary" />
+                <div className="flex flex-col gap-3 mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="h-12 w-12 bg-gradient-to-br from-secondary/20 to-secondary/10 rounded-xl flex items-center justify-center shadow-md">
+                            <Trophy size={22} className="text-secondary" />
                         </div>
-                        <h1 className="side-accent-secondary">Knockout Phase</h1>
+                        <h1 className="side-accent-secondary relative pl-4">
+                            Knockout Phase
+                            <span className="absolute -bottom-2 left-4 w-16 h-1 bg-secondary/40 rounded-full blur-sm"></span>
+                        </h1>
                     </div>
                     <p className="text-muted-foreground max-w-3xl">
                         The knockout phase features the top 4 players from the group stage
@@ -59,7 +62,7 @@ export default function KnockoutPhasePage() {
                 <div className="flex justify-end mb-4">
                     <Button
                         variant="outline"
-                        className="h-10 group"
+                        className="h-10 group glass border-white/10 button-shine hover:bg-white/[0.05]"
                         onClick={() => router.push("/admin")}
                     >
                         <Settings size={16} className="mr-2" />
@@ -70,12 +73,15 @@ export default function KnockoutPhasePage() {
             </div>
 
             {loading ? (
-                <div className="flat-card flex flex-col items-center py-16">
-                    <Loader2 size={32} className="animate-spin text-secondary mb-4" />
+                <div className="flat-card glow-sm flex flex-col items-center py-16">
+                    <div className="relative">
+                        <Loader2 size={40} className="animate-spin text-secondary mb-4" />
+                        <div className="absolute inset-0 rounded-full blur-md bg-secondary/10"></div>
+                    </div>
                     <p className="text-muted-foreground">Loading knockout phase data...</p>
                 </div>
             ) : error ? (
-                <div className="flat-card p-6">
+                <div className="flat-card p-6 glow-sm">
                     <div className="banner-secondary flex items-center">
                         <AlertTriangle size={24} className="mr-4 flex-shrink-0" />
                         <div>
@@ -89,8 +95,9 @@ export default function KnockoutPhasePage() {
                     {status?.championId && (
                         <div className="banner mb-8 flex flex-col sm:flex-row items-center justify-between">
                             <div className="flex items-center">
-                                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center mr-4">
-                                    <Crown size={24} className="text-primary" />
+                                <div className="h-14 w-14 rounded-full bg-gradient-to-r from-primary/20 to-primary/10 flex items-center justify-center mr-4 relative">
+                                    <Crown size={28} className="text-primary animate-pulse-slow" />
+                                    <div className="absolute inset-0 rounded-full blur-md bg-primary/10 -z-10"></div>
                                 </div>
                                 <div>
                                     <p className="text-sm text-primary-foreground/70">Tournament Champion</p>
@@ -105,9 +112,14 @@ export default function KnockoutPhasePage() {
                         </div>
                     )}
 
-                    <div className="flat-card overflow-hidden">
-                        <h2 className="px-6 pt-6 pb-4 border-b border-border mb-4">Tournament Bracket</h2>
-                        <div className="py-4">
+                    <div className="flat-card glow-sm overflow-hidden">
+                        <h2 className="px-6 pt-6 pb-4 border-b border-white/10 mb-4 flex items-center gap-2">
+                            Tournament Bracket
+                            <span className="px-2 py-1 text-xs rounded-full bg-secondary/10 text-secondary border border-secondary/10 ml-2">
+                                Semifinals & Finals
+                            </span>
+                        </h2>
+                        <div className="py-4 glass">
                             <KnockoutBracketView />
                         </div>
                     </div>
