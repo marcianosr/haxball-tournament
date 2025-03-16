@@ -60,8 +60,8 @@ export const PlayerCard = ({ player, className }: PlayerCardProps) => {
           <div className="flex flex-col items-center p-2 bg-muted/30 rounded-md">
             <span className="text-muted-foreground text-xs">W/L</span>
             <span className="font-semibold text-lg">
-              <span className="text-green-500">{wins}</span>/
-              <span className="text-red-500">{losses}</span>
+              <span className="text-emerald-400/80">{wins}</span>/
+              <span className="text-rose-400/70">{losses}</span>
             </span>
           </div>
         </div>

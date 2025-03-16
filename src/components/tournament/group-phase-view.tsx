@@ -129,7 +129,12 @@ export function GroupPhaseView() {
 								{sortedMatches.map((match) => (
 									<li
 										key={match.id}
-										className="p-4 hover:bg-white/[0.02] transition-colors"
+										className={cn(
+											"p-4 transition-colors",
+											match.completed 
+												? "hover:bg-white/[0.02]" 
+												: "opacity-60 hover:opacity-80 hover:bg-white/[0.01]"
+										)}
 									>
 										<div className="grid grid-cols-3 items-center">
 											{/* Left side - Player 1 */}
@@ -165,15 +170,7 @@ export function GroupPhaseView() {
 														</div>
 													)}
 												</div>
-												<span
-													className={cn(
-														"font-medium",
-														match.winnerId ===
-															match.player1Id
-															? "text-green-500"
-															: ""
-													)}
-												>
+												<span className="font-medium">
 													{match.player1.name}
 												</span>
 											</div>
@@ -182,8 +179,25 @@ export function GroupPhaseView() {
 											<div className="flex justify-center items-center">
 												{match.completed ? (
 													<div className="font-bold text-center">
-														{match.player1Score} -{" "}
-														{match.player2Score}
+														<span className={cn(
+															match.winnerId === match.player1Id 
+																? "text-emerald-400/80" 
+																: match.winnerId === match.player2Id 
+																	? "text-rose-400/70" 
+																	: ""
+														)}>
+															{match.player1Score}
+														</span>
+														{" - "}
+														<span className={cn(
+															match.winnerId === match.player2Id 
+																? "text-emerald-400/80" 
+																: match.winnerId === match.player1Id 
+																	? "text-rose-400/70" 
+																	: ""
+														)}>
+															{match.player2Score}
+														</span>
 													</div>
 												) : (
 													<div className="text-xs text-muted-foreground text-center">
@@ -194,15 +208,7 @@ export function GroupPhaseView() {
 
 											{/* Right side - Player 2 */}
 											<div className="flex items-center justify-end">
-												<span
-													className={cn(
-														"font-medium mr-2",
-														match.winnerId ===
-															match.player2Id
-															? "text-green-500"
-															: ""
-													)}
-												>
+												<span className="font-medium mr-2">
 													{match.player2.name}
 												</span>
 												<div className="relative w-8 h-8 rounded-full overflow-hidden bg-muted/20">
