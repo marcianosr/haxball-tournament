@@ -129,25 +129,37 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    /* Base colors */
+    --background: 230 25% 10%;
+    --foreground: 0 0% 100%;
+
+    /* Vibrant accent colors */
+    --primary: 335 100% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 260 100% 65%;
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 190 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    /* UI colors */
+    --card: 230 25% 13%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 230 25% 13%;
+    --popover-foreground: 0 0% 100%;
+
+    --muted: 230 25% 18%;
+    --muted-foreground: 210 20% 80%;
+
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 230 25% 20%;
+    --input: 230 25% 16%;
+    --ring: 335 100% 60%;
+
     --radius: 0.5rem;
   }
 
@@ -182,24 +194,167 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Flat design components */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tight;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
 }
 
-.bracket {
-  @apply flex flex-col items-center justify-center gap-4 p-4;
+@layer components {
+
+  /* Flat card design */
+  .flat-card {
+    @apply bg-card border border-border/40 p-6 rounded-lg;
+  }
+
+  /* Banner elements */
+  .banner {
+    @apply bg-primary/90 text-primary-foreground p-4 rounded-lg;
+  }
+
+  .banner-secondary {
+    @apply bg-secondary/90 text-secondary-foreground p-4 rounded-lg;
+  }
+
+  .banner-accent {
+    @apply bg-accent/90 text-accent-foreground p-4 rounded-lg;
+  }
+
+  /* Status badges */
+  .status-badge {
+    @apply px-3 py-1 text-xs font-semibold rounded-full;
+  }
+
+  .status-active {
+    @apply bg-primary/20 text-primary border border-primary/20;
+  }
+
+  .status-inactive {
+    @apply bg-muted text-muted-foreground border border-border/20;
+  }
+
+  .status-success {
+    @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/20;
+  }
+
+  /* Nav items */
+  .nav-item {
+    @apply px-4 py-2 rounded-md transition-colors duration-200 hover:bg-muted flex items-center gap-2;
+  }
+
+  .nav-item.active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  /* Side accent line */
+  .side-accent {
+    @apply relative pl-4 border-l-2 border-primary;
+  }
+
+  .side-accent-secondary {
+    @apply relative pl-4 border-l-2 border-secondary;
+  }
+
+  .side-accent-accent {
+    @apply relative pl-4 border-l-2 border-accent;
+  }
+
+  /* Bracket tournament UI */
+  .bracket {
+    @apply flex flex-col items-center justify-center gap-6 p-4;
+  }
+
+  .bracket-round {
+    @apply flex flex-row items-center justify-center gap-12;
+  }
+
+  .bracket-matchup {
+    @apply flex flex-col items-center justify-center gap-3;
+  }
+
+  .bracket-connector {
+    @apply h-full w-8 border-r-2 border-accent;
+  }
+
+  .bracket-connector-horizontal {
+    @apply h-1 w-full border-t-2 border-accent;
+  }
+
+  /* Match card */
+  .match-card {
+    @apply bg-card border border-border/40 p-4 rounded-lg flex flex-col gap-2 w-full max-w-xs transition-transform duration-200 hover:translate-y-[-2px];
+  }
+
+  .match-card-header {
+    @apply flex items-center justify-between text-sm text-muted-foreground;
+  }
+
+  .match-card-players {
+    @apply flex flex-col gap-1;
+  }
+
+  .match-player {
+    @apply flex items-center justify-between p-2 rounded;
+  }
+
+  .match-player.winner {
+    @apply bg-primary/10 text-primary;
+  }
 }
 
-.bracket-round {
-  @apply flex flex-row items-center justify-center gap-10;
-}
+@layer utilities {
 
-.bracket-matchup {
-  @apply flex flex-col items-center justify-center gap-2;
-}
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
 
-.bracket-connector {
-  @apply h-full w-8 border-r-2 border-primary;
-}
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-.bracket-connector-horizontal {
-  @apply h-1 w-full border-t-2 border-primary;
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-transform duration-200 hover:translate-y-[-2px];
+  }
+
+  /* Dot patterns */
+  .dot-pattern {
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
 }
