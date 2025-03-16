@@ -32,7 +32,7 @@ export const PlayerCard = ({ player, className }: PlayerCardProps) => {
               src={getImageSrc()}
               alt={`${name}'s profile`}
               fill
-              className="object-cover"
+              className="object-cover object-top"
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               onError={handleImageError}
@@ -59,7 +59,10 @@ export const PlayerCard = ({ player, className }: PlayerCardProps) => {
           </div>
           <div className="flex flex-col items-center p-2 bg-muted/30 rounded-md">
             <span className="text-muted-foreground text-xs">W/L</span>
-            <span className="font-semibold text-lg">{wins}/{losses}</span>
+            <span className="font-semibold text-lg">
+              <span className="text-green-500">{wins}</span>/
+              <span className="text-red-500">{losses}</span>
+            </span>
           </div>
         </div>
       </CardContent>
